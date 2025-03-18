@@ -168,6 +168,12 @@
         <h2></h2>
         <p></p>
     </div>
+     <h2>Chat with My Bot</h2>
+    <div id="chatbox">
+        <div id="messages"></div>
+        <input type="text" id="userInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
     <div id="contact" class="containerh" style="display: none;">
         <h2></h2>
         <form>
@@ -191,6 +197,27 @@
     });
     document.getElementById(section).style.display = 'block';
 }
+    </script>
+     <script>
+        async function sendMessage() {
+            let userMessage = document.getElementById("userInput").value;
+            document.getElementById("userInput").value = "";
+
+            // Display user message
+            document.getElementById("messages").innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+
+            // Send message to Flask backend
+            let response = await fetch("http://127.0.0.1:5000/chat", {  // Update this URL if deploying online
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            let data = await response.json();
+            
+            // Display chatbot response
+            document.getElementById("messages").innerHTML += `<p><strong>Bot:</strong> ${data.response}</p>`;
+        }
     </script>
 </body>
 </html>
